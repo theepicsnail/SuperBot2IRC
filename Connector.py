@@ -5,6 +5,7 @@ from twisted.internet import protocol,reactor
 import sys,traceback
 #these events get given to plugins to give back to the the ircconnector
 log = LogFile("IRCConnector")
+log.debug("Connector imported")
 class IRCConnectorEvents:
 
     def __init__(self): pass
@@ -83,7 +84,7 @@ class Connector(protocol.ClientFactory,irc.IRCClient,object):
         log.note("Constructing.")
         self.eventObj  = IRCConnectorEvents()
         self.protocol = self
-        self.config = ConfigFile("IRCConnector")
+        self.config = ConfigFile("Connector")
         
     def Start(self): 
         
