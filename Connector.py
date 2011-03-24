@@ -67,7 +67,7 @@ class Connector(protocol.ClientFactory,irc.IRCClient,object):
         return self
 
     def handleCommand(self,cmd,prefix,params):
-        super(IRCConnector, self).handleCommand(cmd,prefix,params)
+        super(Connector, self).handleCommand(cmd,prefix,params)
 
         if self.EventHandler:
             event = {}
@@ -84,7 +84,7 @@ class Connector(protocol.ClientFactory,irc.IRCClient,object):
         log.note("Constructing.")
         self.eventObj  = IRCConnectorEvents()
         self.protocol = self
-        self.config = ConfigFile("Connector")
+        self.config = ConfigFile("SuperBot2IRC")
         
     def Start(self): 
         
