@@ -1,1 +1,12 @@
-This module contains the pieces for SuperBot2, that will turn it into an IRC bot.
+This is the example Provider. This has everything to make SuperBot2 an IRC bot.
+Providers have the following layout
+
+provider name/plugins/ 
+provider name/services/
+provider name/Connector.py
+provider name/configFiles.cfg
+    Right now an "AutoLoad.cfg" with 
+    [Plugin]
+        names=MyPlugin  MyOtherPlugin
+    will cause superbot to auto load any plugins you want
+
