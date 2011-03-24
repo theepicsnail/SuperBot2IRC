@@ -40,7 +40,7 @@ class IRCConnectorEvents:
     def stop(self):
         return "stop"
 
-class IRCConnector(protocol.ClientFactory,irc.IRCClient,object):
+class Connector(protocol.ClientFactory,irc.IRCClient,object):
     EventHandler = None
     reactor = None
     def HandleResponse(self,eventInfo):        
