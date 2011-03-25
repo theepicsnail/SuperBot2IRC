@@ -1,8 +1,9 @@
-from Hook import bindFunction,requires
+from Hook import *
 
 @requires("Security")
+@requires("IRCArgs")
 class Test:
-    @bindFunction(command="PRIVMSG",prefix="(?P<nick>.*)!.*")
+    @bindFunction(command="PRIVMSG")
     def foo(self,response,nick,message,loggedIn):
         if loggedIn(nick):
             return response.msg(nick,message);
@@ -10,12 +11,13 @@ class Test:
         if message=="stop":
             return response.stop()
         
-    @bindFunction(message="!count (?P<start>\\d+) (?P<end>\\d+)",prefix="(?P<nick>.*)!.*")
-    def count(self,response,start,end,nick):
-        for i in xrange(int(start),int(end), 1 if start < end else -1):
-            yield response.msg(nick,str(i))
+    @bindFunction(message="!count (?P<start>\\d+) (?P<end>\\d+)")
+    def count(self,response,start,end,nick,target,toMe):
+        if toMe: target = nick
 
-    @bindFunction(message="A")
-    @bindFunction(message="B")
-    def ab(self,response):
-        return response.msg("snail","abc")
+        for i in xrange(int(start),int(end), 1 if start < end else -1):
+            yield response.msg(target,str(i))
+
+    @bindFunction(command="INVITE")
+    def join(self,response,message):
+        return response.join(message)
