@@ -19,11 +19,9 @@ class IRCConnectorEvents:
     def topic(self,channel, message=None):
         return "topic",channel,message
     def say(self, channel, message, length=None):
-        return "say",channel,message, length
+        return "say",channel,message,1024
     def msg(self, user, message, length=None):
-        if length:
-            return "msg",user,message,length
-        return "msg",user,message
+        return "msg",user,message,1024
     def notice(self,user, message):
         return "notice",user, message
     def away(self,message=""):
@@ -71,6 +69,7 @@ class Connector(protocol.ClientFactory,irc.IRCClient,object):
 
         if self.EventHandler:
             event = {}
+            event["nickname"]=self.nickname
             event["command"]=cmd
             event["prefix"]=prefix
             event["target"]=params[0]
