@@ -1,9 +1,9 @@
 from Hook import *
 
-@requires("IRCArgs")#provices 'nick' args
+
+@requires("IRCArgs")  # provides 'nick' args
 class Repeat:
 
     @bindFunction(message="!repeat (.*)")
-    def repeat(self,response,nick, message0):
-        return response.msg(nick,message0)
-
+    def repeat(self, response, nick, message0):
+        return response.msg(nick, message0)
