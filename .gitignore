@@ -1,4 +1,6 @@
 *~
+SuperBot2IRC
+Testing
 *.pyc
 *.swm
 *.swn
@@ -6,3 +8,6 @@
 *.swp
 
 *.db
+Data
+Logs
+Configs/

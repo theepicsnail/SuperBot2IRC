@@ -1,0 +1,5 @@
+[bitly]
+login=
+api_key=
+api_url=http://api.bit.ly/v3/shorten?login=%s&apiKey=%s&longUrl=%s&format=txt
+
