@@ -1,0 +1,11 @@
+*~
+SuperBot2IRC
+Testing
+*.pyc
+*.swm
+*.swn
+*.swo
+*.swp
+Data
+Logs
+Configs/
