@@ -26,12 +26,9 @@ url_re = re.compile('(https?://[^\s]*)')
 class Bitly:
 
     def shorten(self,url):
-        print "Shoren:",url
         nurl = API_URL%(LOGIN, API_KEY, urllib.quote(url))
-        print "nurl:",nurl
         data = urllib2.urlopen(nurl).read()
-        print "data:",data
-        return "{B}Shortened:{B} <{LINK}%s{}>" % data.strip()
+        return data.strip()
 
 
     def onEvent(self,event):
