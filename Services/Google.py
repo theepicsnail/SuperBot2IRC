@@ -4,10 +4,11 @@ import lxml.html
 from Hook import bindFunction
 
 GOOGLE_SEARCH_URL = "http://www.google.com/search?&"
+HEADERS  = { 'User-Agent': "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.5)" }
 
 
 class Google:
-    def _buildResponse(url, is_json=False):
+    def _buildResponse(self, url, is_json=False):
         request = urllib2.Request(url, None, HEADERS)
         response = urllib2.urlopen(request)
         if is_json:
@@ -17,7 +18,7 @@ class Google:
             return response['responseData']
         return response
 
-    def gdefine(self, term, num=None):
+    def gdefine(self, term, num=0):
         """
         Returns google definition for query.
 
@@ -25,6 +26,10 @@ class Google:
         term -- contains query value.
         num -- Which result to return (default 0)
         """
+        if num == '':
+            num = 0
+        num = int(num)
+
         query = { 'q': 'define:' + term }
         url = GOOGLE_SEARCH_URL + urllib.urlencode(query)
         response = self._buildResponse(url)
