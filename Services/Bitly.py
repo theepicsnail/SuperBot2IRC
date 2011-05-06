@@ -21,13 +21,11 @@ print LOGIN, API_KEY, API_URL
 AUTOLEN = 30
 url = None
 
-url_re = re.compile('(https?://[^\s]*)')
-
 
 @requires("IRCArgs")
 class Bitly:
     def shorten(self, url):
-        nurl = API_URL % (LOGIN, API_KEY, urllib.quote(url))
+        nurl = API_URL % (LOGIN, API_KEY, urllib.quote(url, safe=""))
         data = urllib2.urlopen(nurl).read()
         return data.strip()
 
