@@ -11,7 +11,7 @@ class URLTitles:
         title = grabTitle(message0)
         if title:
             if colorize:
-                output = colorize("<{B}Title{}: {LINK}%s{}>" % title)
+                output = colorize("<{B}Title{}: {C7}%s{}>" % title)
             else:
                 output = "<Title: %s>" % title
             return response.say(target, output)
