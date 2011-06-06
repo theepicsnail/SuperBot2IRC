@@ -1,15 +1,20 @@
 from Hook import bindFunction, requires, prefers
-
-
+from Logging import LogFile
+log = LogFile("GD")
+log.debug("Log start")
+import sys
 @requires("Google")
 @prefers("Colors")
 class Google_Define:
     @bindFunction(message="!gd (?P<term>\w+) ?(?P<definition>\d*)")
     def g_define(self, term, response, target, colorize, gdefine, definition):
-        print(definition)
+        log.debug("g_define",term, response, target, colorize, gdefine, definition)
+
+        d = gdefine(term, definition) 
+
         if colorize:
             return response.msg(target, colorize(
-                "<{C3}Google Define{}: %s | {LINK}%s{} [{B}%s{} of %s]>" % gdefine(term, definition)))
+                "<{C3}Google Define{}: %s [{B}%s{} of %s]>" % d))
         else:
             return response.msg(target,
-                    "<Google Define: %s | {LINK}%s{} [{B}%s{} of %s]>" % gdefine(term, definition))
+                    "<Google Define: %s [%s of %s]>" % d)
