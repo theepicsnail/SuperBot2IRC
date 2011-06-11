@@ -10,7 +10,7 @@ class Google_Define:
     def g_define(self, term, response, target, colorize, gdefine, definition):
         log.debug("g_define",term, response, target, colorize, gdefine, definition)
 
-        d = gdefine(term, definition) 
+        d = gdefine(term.replace(' ', '+'), definition) 
 
         if colorize:
             return response.msg(target, colorize(
