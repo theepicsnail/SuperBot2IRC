@@ -28,7 +28,7 @@ class Bitly:
                 output = "Shortened: <%s>" % short
             return response.say(target, output)
 
-    @bindFunction(message="(https?://[^\s!,]*)")
+    @bindFunction(message="(https?://[^\s!>]*)")
     def auto(self, message0, toMe, target, response, colorize, shorten):
         print(toMe, target, len(message0), message0)
         if toMe:
