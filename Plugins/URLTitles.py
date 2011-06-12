@@ -4,7 +4,7 @@ from Hook import bindFunction, requires, prefers
 @requires("URLUtils")
 @prefers("Colors")
 class URLTitles:
-    @bindFunction(message="(https?://[^\s!,]*)")
+    @bindFunction(message="(https?://[^\s!>]*)")
     def url_title(self, target, colorize, grabTitle, message0, response):
         #if toMe:
         #    return  # Ignore PMs and notices
