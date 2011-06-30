@@ -10,3 +10,4 @@ provider name/configFiles.cfg
         names=MyPlugin  MyOtherPlugin
     will cause superbot to auto load any plugins you want
 
+Example configs are provided, rename them to use.
