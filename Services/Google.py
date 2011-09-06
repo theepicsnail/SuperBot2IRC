@@ -1,6 +1,13 @@
 import urllib
 import urllib2
 import lxml.html
+
+try:
+    import simplejson
+    is_json = True
+except:
+    is_json = False
+
 from Hook import bindFunction
 from Logging import LogFile
 log = LogFile("GoogleService")
@@ -14,6 +21,8 @@ class Google:
         request = urllib2.Request(url, None, HEADERS)
         response = urllib2.urlopen(request)
         if is_json:
+            response = response.read()
+            # FIXME: simplejson doesn't like the callback, I think
             response = simplejson.load(response)
             if not 'responseData' in response:
                 log.warning("Json response was empty")
