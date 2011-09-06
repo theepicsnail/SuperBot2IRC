@@ -6,7 +6,7 @@ import sys
 @requires("Google")
 @prefers("Colors")
 class Google_Define:
-    @bindFunction(message="!gd (?P<term>[\w ]+) ?(?P<definition>\d*)")
+    @bindFunction(message="!gd (?P<term>[a-zA-Z ]+) ?(?P<definition>\d*)")
     def g_define(self, term, response, target, colorize, gdefine, definition):
         log.debug("g_define",term, response, target, colorize, gdefine, definition)
 
