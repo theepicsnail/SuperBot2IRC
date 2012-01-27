@@ -40,6 +40,8 @@ class Security:
     #handle the login / logout stuff here
     @bindFunction(prefix="(?P<nick>.*)!.*", message="login (?P<pswd>.*)")
     def login(self, response, nick, pswd):
+        return
+
         log.debug("Login called", nick, pswd, self.sessions)
 
         if(self.isLoggedIn(nick)):
