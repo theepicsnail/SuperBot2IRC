@@ -67,7 +67,7 @@ class Alarm:
                 self.alarms.pop(0)
 
 
-    @bindFunction(message="!alarm (?P<when>.*?)\|(?P<what>.*)")
+    @bindFunction(message="!alarm (?P<when>.*)#(?P<what>.*)")
     def sched(self,response,target,when,what):
         log.debug("Scheduler triggered.")
         dt = parser(when)
