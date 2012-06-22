@@ -45,3 +45,11 @@ class PluginManager:
         self.unload(pm,response,message0,nick,pd,ro,core)
         self.load(response,message0,nick,pm,pd,ro,core)
         log.debug("Cycle finished.")
+
+    @bindFunction(command="NOTICE", message="^plugin list$")
+    def List(self,pm,response,nick):
+        log.debug("List plugins")
+        yield response.msg(nick,"Plugins")
+        yield response.msg(nick,", ".join(pm.__plugins__.keys()))
+        yield response.msg(nick,"Services")
+        yield response.msg(nick,", ".join(pm.__services__.keys()))
