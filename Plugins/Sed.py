@@ -4,43 +4,81 @@ import re
 
 
 log = LogFile("Sed")
-msgHistory = [""]*10
+msgHistory = [""]*20
+sedRegex = "(?P<delim>.)(?P<search>.*?)\\1(?P<replace>.*?)\\1(?P<flags>.*?)(?P<extras>(?:\\1.*)|)$"
+replacementColors = [4, 7, 3, 10, 6]
+
+
+def applySed(searchRE,replace,flags,message,colorNum=0):
+    log.debug("applySed:",searchRE.pattern,replace,flags,message,colorNum)
+
+    if "c" in flags:
+        colorNum %= len(replacementColors)
+        replace = "{C%i}%s{}"%(replacementColors[colorNum],replace)
+
+    if "g" in flags:
+        out = searchRE.sub(replace,message,0)#all 
+    else:
+        out = searchRE.sub(replace,message,1)#once
+    
+    return out
+
+def findMatch(searchRE):
+    global msgHistory
+    for msg in msgHistory:
+        if searchRE.search(msg):
+            log.debug("Found match",msg)
+            return msg
+    log.debug("No match.")
+    return None
+    
+def compileSearch(search,flags):
+    try:
+        if "i" in flags:
+            return re.compile(search,re.I)
+        return re.compile(search)
+    except:
+        log.exception("exception while compiling re:",search)
+        return None # incase of a bad search.
 
 @prefers("Colors")
 class Sed:
 
-    @bindFunction(message="!s(.)(?P<search>.*)\\1(?P<replace>.*)\\1(?P<flags>.*)")
-    def doIt(self,search,replace,flags,response,colorize,target):
-        global msgHistory
-        log.debug("Sed matching", search,replace,flags,response,colorize)
-        if flags.find("i")+1:
-            search = re.compile(search,re.I)
-        else:
-            search = re.compile(search)
-        log.debug("search:",search) 
-        for i in msgHistory:
-            res = search.search(i)
-            log.debug("Search Result:",i,res)
-            if res:
-                colored = flags.find("c")+1 and colorize
-                if colored:
-                    replace = "{C3}%s{}"%replace
-                elif flags.find("c")+1:
-                    yield response.say(target,"'Colors' service wasn't loaded.")
+    @bindFunction(message="!s"+sedRegex)
+    def doIt(self,delim,search,replace,flags,extras,response,colorize,target):
+        log.debug("Sed matching",delim, search,replace,flags,response,colorize)
 
-                
-                log.debug("Replace,flags",replace,flags,flags.find("g")+1 and colorize)
+        searchRE = compileSearch(search,flags)
+        if not searchRE:
+            return response.msg(target,"Invalid regex '%s' :("%search)
+
+        line = findMatch(searchRE)
+        if not line:
+            return response.msg(target,"Couldn't find anything to match that!")
+
+
+        line = applySed(searchRE,replace,flags,line)# apply primary sed
+        
+        colorIdx = 1 
+        while extras:
+            delim,search,replace,flags,extras = re.search(sedRegex,extras).groups()
+            log.debug("Sed step:",line,delim,search,replace,flags,extras)
             
-                if flags.find("g")+1:
-                    out = search.sub(replace,i,0)
-                else:
-                    out = search.sub(replace,i,1)
+            searchRE = compileSearch(search,flags)
+            if not searchRE:
+                return response.msg(target,"Invalid regex '%s' :("%search)
+            
+            if not colorize:
+                flags = flags.replace("c","")
 
-                if colored:
-                    out = colorize(out)
+            line = applySed(searchRE,replace,flags,line,colorIdx)
+            colorIdx += 1
 
-                yield response.say(target,out)
-                return                 
+        if colorize:
+            line = colorize(line)
+        # super-depressing newline bug fix :(
+        line = re.sub(r"(\r|\n)", "", line)
+        return response.say(target,line)
 
     @bindFunction(command="PRIVMSG",message="^[^!]")
     def record(self,message):
