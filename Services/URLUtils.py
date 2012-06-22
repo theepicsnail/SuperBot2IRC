@@ -11,27 +11,25 @@ try:
 except ImportError:
     import htmlentitydefs
     import re
-    BeautifulStone = False
+    BeautifulSoup = False
 
 
 class URLUtils:
     def grabTitle(self, url):
         """Return the title of the page if exists."""
-        try:
-            pagepart = urllib2.urlopen(url, None, 5).read(5120)
-            if lxml:
-                title = lxml.html.fromstring(pagepart).find(".//title").text
-                return re.sub('[\n\r\t ]+', ' ', title).strip()
-            elif BeautifulSoup:
-                title = BeautifulSoup(pagepart)
-                title = re.sub('[\n\r\t ]+', ' ', title).strip()
-                return BeautifulStoneSoup(title, convertEntities=BeautifulStoneSoup.HTML_ENTITIES).contents[0]
-            else:
-                title = pagepart.split("title>")[1][:-2]
-                title = re.sub('[\n\r\t ]+', ' ', title).strip()
-                return self.unescape(str(title))
-        except Exception, e:
-            raise e
+        pagepart = urllib2.urlopen(url, None, 5).read(5120)
+        if lxml:
+            title = lxml.html.fromstring(pagepart).find(".//title").text
+            return re.sub('[\n\r\t ]+', ' ', title).strip()
+        elif BeautifulSoup:
+            title = BeautifulSoup(pagepart)
+            #title isn't a string here. apparently....
+            title = re.sub('[\n\r\t ]+', ' ', title).strip()
+            return BeautifulStoneSoup(title, convertEntities=BeautifulStoneSoup.HTML_ENTITIES).contents[0]
+        else:
+            title = pagepart.split("title>")[1][:-2]
+            title = re.sub('[\n\r\t ]+', ' ', title).strip()
+            return self.unescape(str(title))
 
     # taken from http://effbot.org/zone/re-sub.htm#unescape-html
     # Written by Fredrik Lundh
