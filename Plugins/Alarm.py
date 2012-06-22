@@ -40,6 +40,18 @@ except:
     log.debug("Using pickle.")
 
 
+def saveAlarms(alarms):
+    try:
+        pickle.dump(alarms,file(storeFile,"w"))
+    except:
+        log.exception("Failed to store pickle.")
+def loadAlarms():
+    try:
+        return pickle.load(file(storeFile))
+    except:
+        log.exception("Failed to load pickle")
+        return False
+
 
 
 
@@ -47,25 +59,23 @@ except:
 class Alarm:
     alarms = []
     def __init__(self):
-        try:
-            self.alarms = pickle.load(file(storeFile))
-            log.debug("Pickle loaded.",*self.alarms)
-        except:
-            log.exception("Failed to load pickle.")
+        self.alarms = loadAlarms()
+        if self.alarms == False:
             self.alarms = []
-            pass
 
-    @dedicated()
+    @dedicated(delay=1)
     def ded(self,response):
-        time.sleep(1)
-        while len(self.alarms)>0:
+        moreAlarms = True
+        while moreAlarms:
+            moreAlarms = False
             now = datetime.datetime.now()
             curAlarm = self.alarms[0]
             if now > curAlarm[0]:
+                moreAlarms = True
                 log.debug("Firing alarm:",*curAlarm) 
                 yield response.msg(curAlarm[1],curAlarm[2])
                 self.alarms.pop(0)
-
+                saveAlarms(self.alarms)
 
     @bindFunction(message="!alarm (?P<when>.*?)#(?P<what>.*)")
     def sched(self,response,target,when,what):
@@ -79,10 +89,5 @@ class Alarm:
         yield response.msg(target,"Sceduled for: %s"%dt)
         self.alarms.append((dt,target,what))
         self.alarms.sort()
-        
-        try:
-            pickle.dump(self.alarms,file(storeFile,"w"))
-        except:
-            log.exception("Failed to store pickle.")
-
+        saveAlarms(self.alarms)
 
