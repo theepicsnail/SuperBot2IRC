@@ -62,6 +62,7 @@ class Connector(protocol.ClientFactory, irc.IRCClient, object):
     reactor = None
 
     def HandleResponse(self, eventInfo):
+        log.debug("Handle Response",eventInfo)
         if eventInfo == "stop":
             log.debug("Stopping reactor")
             self.reactor.stop()
@@ -75,6 +76,7 @@ class Connector(protocol.ClientFactory, irc.IRCClient, object):
                 #Coming from a different thread, we have to do this apparently
                 self.transport.doWrite()
             except:
+                log.exception("Failed to send event.")
                 traceback.print_exc(file=sys.stdout)
 
     def SetEventHandler(self, func):
@@ -125,7 +127,11 @@ class Connector(protocol.ClientFactory, irc.IRCClient, object):
         reactor.connectTCP(server, port, self)
         log.note("Running reactor")
         self.reactor = reactor
-        reactor.run()
+        try:
+            reactor.run()
+        except:
+            log.exception("Exception in reactor. Connector exiting.")
+        low.note("Exiting Connector")
 
     def Stop(self):
         log.note("Nothing to do for stopping")
