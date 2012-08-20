@@ -5,7 +5,7 @@ import re
 
 log = LogFile("Sed")
 msgHistory = [""]*20
-sedRegex = "(?P<delim>.)(?P<search>.*?)\\1(?P<replace>.*?)\\1(?P<flags>.*?)(?P<extras>(?:\\1.*)|)$"
+sedRegex = "(?P<delim>[^a-zA-Z])(?P<search>.*?)\\1(?P<replace>.*?)\\1(?P<flags>.*?)(?P<extras>(?:\\1.*)|)$"
 replacementColors = [4, 7, 3, 10, 6]
 
 
