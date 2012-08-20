@@ -49,16 +49,27 @@ class Alias:
         if nick not in aliases:
             aliases[nick]={}
         aliases[nick][shorthand]=expanded
+        if shorthand != '-remove' | '-h' | '--help':
+            return response.say(target, shorthand+" set to: "+expanded)
         saveAliases()
+   
+    @bindFunction(message="^!alias --help")
+    def iHelp(self, nick, response, shorthand, target):
+        return response.msg(target, "!alias to list your current aliases\n!alias <foo> <bar> to set bar to foo\n!alias -remove <foo> to remove foo\n@foo to use the foo alias")
     
+    
+    @bindFunction(message="^!alias -h")
+    def Help(self, nick, response, shorthand, target):
+        return response.msg(target, "!alias to list your current aliases\n!alias <foo> <bar> to set bar to foo\n!alias -remove <foo> to remove foo\n@foo to use the foo alias")
+         
+
     @bindFunction(message="^!alias (?P<shorthand>[^ ]+)$")
     def showAlias(self, nick, response, shorthand, target):
         log.debug("Show", nick, response, shorthand, target)
 
         expanded = aliases.get(nick,{}).get(shorthand,None)
-        if expanded:
-            return response.say(target,"Alias set to:"+expanded)
-        return response.msg(target,"Nothing assigned.")
+        if shorthand != '-h' | '--help':
+            return response.msg(target,"Nothing assigned.")
 
     @bindFunction(message="^!alias -remove (?P<shorthand>[^ ]+)$")
     def removeAlias(self,nick, response, shorthand, target):
@@ -72,6 +83,14 @@ class Alias:
 
         aliases[nick].pop(shorthand)
         saveAliases()
+        return response.msg(target, shorthand+" removed")
+
+    @bindFunction(message="^@(?P<shorthand>[^ ]+)")
+    def errorAlias(self,nick,response,shorthand,target):
+        if nick not in aliases:
+            return response.msg(target, "You have no aliases set")
+        if shorthand not in aliases[nick]:
+            return response.msg(target, "No alias set for: "+shorthand)
 
     @bindFunction(message="@(?P<shorthand>[^ ]+)")
     def runAlias(self, nick, core, event, shorthand):
