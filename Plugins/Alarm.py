@@ -90,4 +90,16 @@ class Alarm:
         self.alarms.append((dt,target,what))
         self.alarms.sort()
         saveAlarms(self.alarms)
+    
+    @bindFunction(message="!alarm --help")
+    def manOne(self,response,target):
+      return response.say(target, "!alarm <time>:<message>\nTime usage: month,day,year hour,minute,second")
+    
+    @bindFunction(message="!alarm -h")
+    def manTwo(self,response,target):
+       return response.say(target, "!alarm <time>:<message>\nTime usage: month,day,year hour,minute,second")
+
+    @bindFunction(message="^!date")
+    def date(self, response, target):
+        return response.say(target,time.strftime("%a, %D %T"))
 
