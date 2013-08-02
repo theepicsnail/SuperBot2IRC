@@ -49,8 +49,6 @@ class Alias:
         if nick not in aliases:
             aliases[nick]={}
         aliases[nick][shorthand]=expanded
-        if shorthand != '-remove' | '-h' | '--help':
-            return response.say(target, shorthand+" set to: "+expanded)
         saveAliases()
    
     @bindFunction(message="^!alias --help")
@@ -68,8 +66,6 @@ class Alias:
         log.debug("Show", nick, response, shorthand, target)
 
         expanded = aliases.get(nick,{}).get(shorthand,None)
-        if shorthand != '-h' | '--help':
-            return response.msg(target,"Nothing assigned.")
 
     @bindFunction(message="^!alias -remove (?P<shorthand>[^ ]+)$")
     def removeAlias(self,nick, response, shorthand, target):

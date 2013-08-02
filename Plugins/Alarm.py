@@ -42,12 +42,17 @@ except:
 
 def saveAlarms(alarms):
     try:
+        log.debug("Saving alarms",storeFile,alarms)
         pickle.dump(alarms,file(storeFile,"w"))
+        log.debug("saved.")
     except:
         log.exception("Failed to store pickle.")
 def loadAlarms():
     try:
-        return pickle.load(file(storeFile))
+        log.debug("Loading alarms", storeFile)
+        alarms = pickle.load(file(storeFile))
+        log.debug("Loaded.", alarms)
+        return alarms;
     except:
         log.exception("Failed to load pickle")
         return False
@@ -57,7 +62,6 @@ def loadAlarms():
 
 @requires("IRCArgs")
 class Alarm:
-    alarms = []
     def __init__(self):
         self.alarms = loadAlarms()
         if self.alarms == False:
@@ -65,6 +69,9 @@ class Alarm:
 
     @dedicated(delay=1)
     def ded(self,response):
+        if not self.alarms:
+            log.debug("No alarms to fire.")
+            return
         moreAlarms = True
         while moreAlarms:
             moreAlarms = False

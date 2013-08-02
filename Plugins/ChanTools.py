@@ -1,8 +1,6 @@
 from Hook import *
 
-@requires("Security")
 @requires("IRCArgs")
-@requires("PluginManager")
 class ChanTools:
     @bindFunction(command="INVITE")
     def join(self,response,message):
@@ -12,3 +10,9 @@ class ChanTools:
     def autoJoin(self,response):
         yield response.join("#test")
         yield response.join("#adullam")
+
+    @bindFunction(message="^(?P<stuff>.*)\\o/")
+    def yayMan(self,response, stuff, target):
+        spaces = (len(stuff)-1)*" "
+        yield response.msg(target,spaces+"YAY")
+        yield response.msg(target,spaces+"/ \\")
